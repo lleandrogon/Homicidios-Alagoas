@@ -1,11 +1,13 @@
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 
 from datetime import datetime
 import pendulum
 
 from operators.extractHomicidiosAl import extract_homicidios
 from operators.transformHomicidiosAl import transform_homicidios
+from operators.createTableHomicidiosAl import query
 
 dag = DAG(
     dag_id = "Homicidios_Alagoas",
@@ -31,4 +33,11 @@ t_homicidios = PythonOperator(
     dag = dag
 )
 
-e_homicidios >> t_homicidios 
+ct_homicidios = SQLExecuteQueryOperator(
+    task_id = "create_table_homicidios",
+    conn_id = "homicides",
+    sql = query,
+    dag = dag
+)
+
+e_homicidios >> t_homicidios >> ct_homicidios

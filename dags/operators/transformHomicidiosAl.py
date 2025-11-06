@@ -15,7 +15,7 @@ def transform_homicidios(**kwargs):
     df["death_type"] = df["death_type"].replace({
         "Paf": "PAF",
         "Paf/B": "PAF/B",
-        "Ni": "NI"
+        "Ni": "Não Identificado"
     })
 
     df["city"] = df["city"].replace({
@@ -32,6 +32,7 @@ def transform_homicidios(**kwargs):
 
     df["neighborhood"] = df["neighborhood"].replace("Bairro não Informado", "Bairro Desconhecido")
 
-    df["date"] = pd.to_datetime(df["date"], format = "%d/%m/%Y", errors = "coerce")
+    df = df.rename(columns = {"date": "death_date"})
+    df["death_date"] = pd.to_datetime(df["death_date"], format = "%d/%m/%Y", errors = "coerce")
 
     return df
