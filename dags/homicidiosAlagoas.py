@@ -7,7 +7,9 @@ import pendulum
 
 from operators.extractHomicidiosAl import extract_homicidios
 from operators.transformHomicidiosAl import transform_homicidios
-from operators.createTableHomicidiosAl import query
+from operators.createTableHomicidiosAl import query_create_table
+from operators.createIndexHomicidiosAl import query_create_index
+from operators.loadHomicidiosAl import load_homicidios
 
 dag = DAG(
     dag_id = "Homicidios_Alagoas",
@@ -36,8 +38,21 @@ t_homicidios = PythonOperator(
 ct_homicidios = SQLExecuteQueryOperator(
     task_id = "create_table_homicidios",
     conn_id = "homicides",
-    sql = query,
+    sql = query_create_table,
     dag = dag
 )
 
-e_homicidios >> t_homicidios >> ct_homicidios
+ci_homicidios = SQLExecuteQueryOperator(
+    task_id = "create_index_homicidios",
+    conn_id = "homicides",
+    sql = query_create_index,
+    dag = dag
+)
+
+l_homicidios = PythonOperator(
+    task_id = "load_homicidios",
+    python_callable = load_homicidios,
+    dag = dag
+)
+
+e_homicidios >> t_homicidios >> ct_homicidios >> ci_homicidios >> l_homicidios

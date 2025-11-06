@@ -7,7 +7,7 @@ def transform_homicidios(**kwargs):
     df["skin_color"] = df["skin_color"].replace("NI", "Não Informado")
 
     df["age"] = df["age"].replace("-", None)
-    df["age"] = pd.to_numeric(df["age"], errors = "coerce").astype("Int64")
+    df["age"] = pd.to_numeric(df["age"], errors = "coerce")
 
     df["sex"] = df["sex"].replace("-", "Sexo Desconhecido")
 

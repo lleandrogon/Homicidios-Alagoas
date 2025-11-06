@@ -1,4 +1,4 @@
-query = """
+query_create_table = """--sql
     CREATE TABLE IF NOT EXISTS homicides_alagoas(
         id SERIAL PRIMARY KEY,
         skin_color VARCHAR(100),
